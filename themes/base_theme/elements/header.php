@@ -14,7 +14,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
   <meta id="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=5.0,user-scalable=1" name="viewport">
   <?php
   Loader::element('header_required');
-  //グローバル変数でJS用にログイン状態を判定するフラグを設定
+  //JS用にログイン状態を判定するフラグをグローバルへ設定
   $u = new User();
    if($u->isLoggedIn()) {
       echo '<script>var is_ccmtoolbarvisible = true;</script>';
@@ -24,7 +24,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
   ?>
 
   <!--
-  テーマ内のcss・jsを読み込む
+  テーマ内のcss・jsを読み込む ※コメントアウトして使用
   <link rel="stylesheet" href="<?php echo $this->getThemePath()?>/lib/css/bxslider-4/jquery.bxslider.css">
   <script src="<?php echo $this->getThemePath()?>/js/base.js"></script>
   -->
@@ -33,7 +33,6 @@ if($c->isEditMode()){
   //編集モード時に適用したい処理
 }
 
-$u = new User();
 if($u->isLoggedIn()) {
  //ログイン状態で適用したい処理
 }
