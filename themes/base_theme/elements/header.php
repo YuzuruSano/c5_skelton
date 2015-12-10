@@ -42,8 +42,7 @@ if($u->isLoggedIn()) {
 <body id="top">
 <div class="<?php echo $c->getPageWrapperClass()?>">
   <div id="wrap">
-    <?php var_dump(Config::get('concrete.normal_url'));
-
+    <?php
     $au = Core::make('helper/aUtil');
     echo $au->test();
     ?>
