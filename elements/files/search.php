@@ -1,8 +1,11 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
+use Concrete\Controller\Search\Files as Files;
+
 $form = Loader::helper('form');
 
-$searchFields = $controller->getSearchFields();
+$sf = new Files();
+$searchFields = $sf->getSearchFields();
 
 $flr = new \Concrete\Core\Search\StickyRequest('files');
 $req = $flr->getSearchRequest();
@@ -45,9 +48,10 @@ $req = $flr->getSearchRequest();
 <script type="text/template" data-template="search-form">
 <?php
 $fp = FilePermissions::getGlobal();
+
 if ($fp->canAddFile()) { ?>
     <div id="ccm-file-manager-upload-prompt-02" class="ccm-file-manager-upload">
-    <strong>ファイルアップロード</strong>/ クリックして選択、もしくはドラッグ＆ドロップ<a class="dialog-launch" dialog-title="ファイル追加" dialog-modal="true" dialog-height="500" dialog-width="500" href="/shioyoshiken/cms/index.php/tools/required/files/import">追加オプション</a><input type="file" multiple="multiple" name="files[]"></div>
+    <strong>ファイルアップロード</strong>/ クリックして選択、もしくはドラッグ＆ドロップ<a class="dialog-launch" dialog-title="ファイル追加" dialog-modal="true" dialog-height="500" dialog-width="500" href="<?php echo REL_DIR_FILES_TOOLS_REQUIRED?>/files/import">追加オプション</a><input type="file" multiple="multiple" name="files[]"></div>
 <?php } ?>
 <form role="form" data-search-form="files" action="<?php echo URL::to('/ccm/system/search/files/submit')?>" class="ccm-search-fields">
     <div class="ccm-search-fields-row form-inline">

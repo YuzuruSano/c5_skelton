@@ -40,7 +40,7 @@ if($u->isLoggedIn()) {
 </head>
 
 <body id="top">
-<div class="<?php echo $c->getPageWrapperClass()?>">
+<div class="<?php echo $c->getPageWrapperClass();?>">
   <div id="wrap">
     <?php
     $au = Core::make('helper/aUtil');

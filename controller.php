@@ -85,6 +85,13 @@ class Controller extends Package
         $app = Core::getFacadeApplication();
         $sp = new AdditionalUtilServiceProvider($app);
         $sp->register();
+
+        /* ===============================================
+        override system path
+        =============================================== */
+        /* add file uploader , when call file manager on dialog request
+        ----------------------- */
+        Route::register('/ccm/system/dialogs/file/search','Concrete\Package\SuitonBaseUtil\Controller\Dialog\File\Search::view');
     }
 
     public function install(){
