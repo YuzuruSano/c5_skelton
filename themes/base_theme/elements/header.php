@@ -45,5 +45,6 @@ if($u->isLoggedIn()) {
   <div id="wrap">
     <?php var_dump(Config::get('concrete.normal_url'));
 
-var_dump(Core::make('helper/aUtil')->the_permalink());
+    $au = Core::make('helper/aUtil');
+    echo $au->test();
     ?>

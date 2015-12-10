@@ -24,8 +24,8 @@ class AdditionalUtil
 			$nom = BASE_URL;
 			$secure = DIR_REL;
 		}else{
-			$nom = 'http://www.designweek-kyoto.com'.DIR_REL;
-			$secure = 'https://secure.designweek-kyoto.com'.DIR_REL;
+			$nom = 'deploy_url'.DIR_REL;
+			$secure = 'ssl_deploy_url'.DIR_REL;
 		}
 
 		$p = Page::getByID($id);
