@@ -15,8 +15,8 @@ use Config;
 class AdditionalUtil
 {
 	//サンプル
-	public function test(){
-		return 'Hello We Are SizenkainoOkite!!';
+	public function test($text = 'Hello We Are SizenkainoOkite!!'){
+		return $text;
 	}
 
 	/**
