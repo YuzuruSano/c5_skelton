@@ -14,15 +14,12 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 	<meta id="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=5.0,user-scalable=1" name="viewport">
 	<?php
 	Loader::element('header_required');
-	//JS用にログイン状態を判定するフラグをグローバルへ設定
-	$u = new User();
-	if($u->isLoggedIn()) {
-		echo '<script>var is_ccmtoolbarvisible = true;</script>';
-	}else{
-		echo '<script>var is_ccmtoolbarvisible = false;</script>';
-	}
-	//ページネーションのトータルページ数を渡すためのグローバル変数
-	//ajaxページネーションとかinfinity scroll用
+	//theme path for Javasrcipt
+	?>
+	<script>var CCM_THEME_PATH = '<?php echo $this->getThemePath()?>'</script>
+	<?php
+	//for total pagenation num
+	//for ajax pagenation,for infinityscroll etc...
 	?>
 	<script>var cm_this_pagenation_total = 0;</script>
 	<!--
@@ -32,11 +29,11 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 	-->
 <?php
 if($c->isEditMode()){
-  //編集モード時に適用したい処理
+	//編集モード時に適用したい処理
 }
 
 if($u->isLoggedIn()) {
- //ログイン状態で適用したい処理
+	//ログイン状態で適用したい処理
 }
 ?>
 </head>
