@@ -8,5 +8,8 @@ class PageTheme extends Theme
 {
 	public function registerAssets() {
 		$this->requireAsset('javascript', 'jquery');
+		$this->requireAsset('javascript', 'underscore');
+		$this->requireAsset('javascript', 'jquery/ui');
+		$this->requireAsset('css', 'jquery/ui');
 	}
 }
