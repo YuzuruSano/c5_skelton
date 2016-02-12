@@ -5,7 +5,7 @@ $c = Page::getCurrentPage();
 if (is_object($c)) {
 	$cp = new Permissions($c);
 }
-
+$nh = Core::make('helper/navigation');
 /**
  * Handle page title
  */
@@ -129,9 +129,9 @@ $site = Config::get('concrete.site');
 <meta property="og:description" content="<?php echo htmlspecialchars($akd, ENT_COMPAT, APP_CHARSET)?>" />
 <?php endif; ?>
 
-<meta property="og:url" content="<?php echo View::url('/'); ?>" />
+<meta property="og:url" content="<?php echo $nh->getLinkToCollection($c); ?>" />
 <meta property="og:site_name" content="<?php echo htmlspecialchars($site, ENT_COMPAT, APP_CHARSET)?>" />
-<meta property="og:image" content="http://designweek-kyoto.com/application/files/3814/4790/8869/ogp.jpg" />
+<meta property="og:image" content="" />
 
 <?php $u = new User(); ?>
 <script type="text/javascript">
