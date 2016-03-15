@@ -53,13 +53,13 @@ class AdditionalUtil
 	 * @param str $thumbnail_type_name
 	 * @return str file url
 	 */
-	public function thumb_src($file_obj,$thumbnail_type_name){
+	public function thumb_src($file_obj,$thumbnail_type_name = 'full'){
+		$file_src = "";
 		if($file_obj) {
 			$handles = array();
 			foreach($file_obj->getThumbnails() as $ff){
 				$handles[] = $ff->getThumbnailTypeVersionObject()->getHandle();
 			}
-
 			if(in_array($thumbnail_type_name, $handles)){
 				$file_src = $file_obj->getThumbnailURL($thumbnail_type_name);
 			}else{
