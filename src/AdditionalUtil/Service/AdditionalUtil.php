@@ -60,14 +60,21 @@ class AdditionalUtil
 			foreach($file_obj->getThumbnails() as $ff){
 				$handles[] = $ff->getThumbnailTypeVersionObject()->getHandle();
 			}
-			if(in_array($thumbnail_type_name, $handles)){
-				$file_src = $file_obj->getThumbnailURL($thumbnail_type_name);
-			}else{
-				$file_src = $file_obj->getThumbnailURL('full');
-			}
 
-			return $file_src;
+			if(in_array($thumbnail_type_name, $handles)){
+				$type = \Concrete\Core\File\Image\Thumbnail\Type\Type::getByHandle($thumbnail_type_name);
+				$file_src = $file_obj->getThumbnailURL($type->getBaseVersion());
+				return $file_src;
+			}else{
+				$path = $file_obj->getRelativePath();
+				if(!$path) {
+					$path = $file_obj->getURL();
+				}
+				return $path;
+			}
 		}
+
+		return false;
 	}
 	/**
 	 * 2つの日付の差分を返す
