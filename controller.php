@@ -87,6 +87,10 @@ class Controller extends Package
 		$app = Core::getFacadeApplication();
 		$sp = new AdditionalUtilServiceProvider($app);
 		$sp->register();
+
+		Core::bindShared('editor', function() {
+			return new \Concrete\Package\SuitonBaseUtil\Src\Editor\RedactorEditor();
+		});
 	}
 
 	public function install(){
