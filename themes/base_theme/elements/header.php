@@ -1,6 +1,6 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
-global $u;
+$u = new User();
 ?>
 <!DOCTYPE html><!-- [if IEMobile 7 ]>  <html lang="ja" class="no-js iem7"><![endif] -->
 <!-- [if lt IE 7]><html lang="ja" class="no-js lt-ie9 lt-ie8 lt-ie7 ie6"><![endif] -->

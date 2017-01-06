@@ -4,22 +4,10 @@ defined('C5_EXECUTE') or die("Access Denied.");
 
 use Package;
 use Concrete\Package\SuitonBaseUtil\Src\AdditionalUtil\AdditionalUtilServiceProvider;
-use BlockType;
-use Loader;
-use Concrete\Core\Page\Single as SinglePage;
 use Core;
 use Config;
-use User;
-use Page;
-use UserInfo;
-use Exception;
-use Concrete\Core\Block\BlockController;
-use Route;
-use Router;
-use Database;
-use Concrete\Core\Page\Single;
 use Concrete\Core\Page\Theme\Theme;
-use Concrete\Core\Foundation\ClassAliasList;
+
 
 class Controller extends Package
 {
@@ -48,25 +36,6 @@ class Controller extends Package
 		/* ===============================================
 		Save my config
 		=============================================== */
-		/*
-		Define test or deploy
-		Please change host to suit your environment
-		----------------------- */
-		// if(strstr($_SERVER['SERVER_NAME'],'192.168') || strstr($_SERVER['SERVER_NAME'],'localhost')){
-		//     $env = 'test';
-		// }else{
-		//     $env = 'deploy';
-		// }
-		//
-		$env = 'nom';
-
-		if($env == 'test' || $env == 'nom'){
-			$normal = BASE_URL;
-			$secure = DIR_REL;
-		}else{
-			$normal = '本番URLをいれる'.DIR_REL;
-			$secure = '本番sslURLを入れる'.DIR_REL;
-		}
 
 		$config_param = array(
 			'seo.title_format' => '%2$s | %1$s',
@@ -87,10 +56,6 @@ class Controller extends Package
 		$app = Core::getFacadeApplication();
 		$sp = new AdditionalUtilServiceProvider($app);
 		$sp->register();
-
-		Core::bindShared('editor', function() {
-			return new \Concrete\Package\SuitonBaseUtil\Src\Editor\RedactorEditor();
-		});
 	}
 
 	public function install(){
@@ -99,50 +64,6 @@ class Controller extends Package
 
 		//theme install
 		Theme::add('base_theme', $pkg);
-
-		$db = Database::getActiveConnection();
-
-		//add and refresh single page
-		$this->addSinglePage('/dashboard/system/basics/name', 'Name', 'test');
-	}
-
-	public function upgrade()
-	{
-		$pkg = $this->getByID($this->getPackageID());
-		parent::upgrade();
-		$db = Database::getActiveConnection();
-
-	   $this->addSinglePage('/dashboard/system/basics/name', 'Name', 'test');
-	}
-
-	public function uninstall() {
-		parent::uninstall();
-		$db = Loader::db();
-	}
-
-	/**
-	* Adds/installs or refresh a single page
-	* @param string $pagePath The relative path to the single page
-	* @param string $pageName The name of the single page
-	* @param string $description The description for the single page
-	* Thanks! http://www.code-examples.com/concrete-5-7-creating-a-single-page-for-the-frontend/
-	*/
-	private function addSinglePage($pagePath, $pageName, $description){
-		$pkg = Package::getByHandle($this->getPackageHandle());
-		$singlePage = Page::getByPath($pagePath);
-
-		if ($singlePage->isError() && $singlePage->getError() == COLLECTION_NOT_FOUND) {
-			/* @var $singlePage Single*/
-			$singlePage = Single::add($pagePath, $pkg);
-			$singlePage->update(array('cName' => $pageName, 'cDescription' => $description));
-
-			return $singlePage;
-		}else{//refresh single page by package file
-			$cID = Page::getByPath($pagePath)->getCollectionID();
-			Loader::db()->execute('update Pages set pkgID = ? where cID = ?', array($pkg->pkgID, $cID));
-		}
-
-	   return null;
 	}
 
 	/**
