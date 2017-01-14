@@ -15,34 +15,8 @@ use Config;
 class AdditionalUtil
 {
 	//サンプル
-	public function test($text = 'Hello We Are SizenkainoOkite!!'){
+	public function test($text = 'Hello'){
 		return $text;
-	}
-
-	/**
-	 * ページidを元にドメイン付きのリンクを返す
-	 * idが設定されていない場合はトップページのURLを返す
-	 * $secureflgをtrueにすることでsslURLを返す
-	 *
-	 * @param int $id
-	 * @param bool $secureflg
-	 * @return str url
-	 */
-	public function the_permalink($id = 1,$secureflg = false){
-		if(Config::get('concrete.myenv') == 'test'){
-			$nom = BASE_URL;
-			$secure = DIR_REL;
-		}else{
-			$nom = 'deploy_url'.DIR_REL;
-			$secure = 'ssl_deploy_url'.DIR_REL;
-		}
-
-		$p = Page::getByID($id);
-		if($secureflg){
-			return $secure . $p->getCollectionPath();
-		}else{
-			return $nom . $p->getCollectionPath();
-		}
 	}
 
 	/**
