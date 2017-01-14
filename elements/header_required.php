@@ -8,7 +8,9 @@ $v = View::getInstance();
 $sitename = Config::get('concrete.site');
 //lang
 $current_section = Section::getCurrentSection();
-$current_section_top_id = $current_section->getCollectionID();
+if(is_object($current_section)){
+	$current_section_top_id = $current_section->getCollectionID();
+}
 $locales = \Site::getSite()->getLocales();
 foreach ($locales as $locale) {
 	if ($locale->getIsDefault()) {
@@ -67,13 +69,13 @@ if (is_object($c)) {
 					$titles[] = $t->getCollectionName();
 				}
 
-				if($current_section_top_id != $defaultLocaleID){
-					$site_top = $c->getCollectionName();
-				}else{
-					$site_top = $sitename;
+				if(is_object($current_section)){
+					if($current_section_top_id != $defaultLocaleID){
+						$titles[] = Section::getCurrentSection()->getCollectionName();
+					}else{
+						$titles[] = $sitename;
+					}
 				}
-
-				$titles[] = $site_top;
 				$pageTitle = implode(Config::get('concrete.seo.title_segment_separator'), $titles);
 			}
 		}
