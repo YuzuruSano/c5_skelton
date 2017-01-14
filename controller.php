@@ -79,6 +79,7 @@ class Controller extends Package
 		=============================================== */
 		$config_param = array(
 			'seo.title_format' => '%2$s | %1$s',
+			'seo.title_segment_separator' => ' | ',
 			'external.news_overlay' => false,
 		);
 		$this->setMyConfig($config_param);

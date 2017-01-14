@@ -53,10 +53,28 @@ if (is_object($c)) {
 					$pageTitle = $sitename;
 				}
 			}else{
-				$seo->setSiteName($sitename);
-				$seo->setTitleFormat(Config::get('concrete.seo.title_format'));
-				$seo->setTitleSegmentSeparator(Config::get('concrete.seo.title_segment_separator'));
-				$pageTitle = $seo->getTitle();
+				// $seo->setSiteName($sitename);
+				// $seo->setTitleFormat(Config::get('concrete.seo.title_format'));
+				// $seo->setTitleSegmentSeparator(Config::get('concrete.seo.title_segment_separator'));
+				// $pageTitle = $seo->getTitle();
+
+				$trail = $nh->getTrailToCollection($c);
+				$ancestors = array_reverse($trail);
+				$ancestors = array_slice($ancestors, 1);
+
+				$titles = array($pageTitle);
+				foreach($ancestors as $t){
+					$titles[] = $t->getCollectionName();
+				}
+
+				if($current_section_top_id != $defaultLocaleID){
+					$site_top = $c->getCollectionName();
+				}else{
+					$site_top = $sitename;
+				}
+
+				$titles[] = $site_top;
+				$pageTitle = implode(Config::get('concrete.seo.title_segment_separator'), $titles);
 			}
 		}
 	}
