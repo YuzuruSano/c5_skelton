@@ -1,11 +1,27 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
-
+use Concrete\Core\Multilingual\Page\Section\Section;
+$nh = Core::make('helper/navigation');
+//view
+$v = View::getInstance();
+//sitename
+$sitename = Config::get('concrete.site');
+//lang
+$current_section = Section::getCurrentSection();
+$current_section_top_id = $current_section->getCollectionID();
+$locales = \Site::getSite()->getLocales();
+foreach ($locales as $locale) {
+	if ($locale->getIsDefault()) {
+		$defaultLocaleID = $locale->getSiteLocaleID();
+	}
+}
+//current page
 $c = Page::getCurrentPage();
+$cID = $c->getCollectionID();
 if (is_object($c)) {
 	$cp = new Permissions($c);
 }
-$nh = Core::make('helper/navigation');
+
 /**
  * Handle page title
  */
@@ -30,109 +46,80 @@ if (is_object($c)) {
 				$seo->addTitleSegmentBefore($pageTitle);
 			}
 
-			$pt = $c->getPageTemplateObject();
-			if (is_object($pt)) {
-				$handle = $pt->getPageTemplateHandle();
-			}
-
-			if($handle == 'home'){
-				$seo->setSiteName(Config::get('concrete.site'));
-				$seo->setTitleFormat(Config::get('concrete.seo.title_format'));
-				$seo->setTitleSegmentSeparator(Config::get('concrete.seo.title_segment_separator'));
-				$pageTitle = $seo->getTitle();
+			if($cID == $current_section_top_id){
+				if($current_section_top_id != $defaultLocaleID){
+					$pageTitle = $c->getCollectionName();
+				}else{
+					$pageTitle = $sitename;
+				}
 			}else{
-				$seo->setSiteName(Config::get('concrete.site'));
+				$seo->setSiteName($sitename);
 				$seo->setTitleFormat(Config::get('concrete.seo.title_format'));
 				$seo->setTitleSegmentSeparator(Config::get('concrete.seo.title_segment_separator'));
 				$pageTitle = $seo->getTitle();
 			}
-
 		}
 	}
+
 	$pageDescription = (!isset($pageDescription) || !$pageDescription) ? $c->getCollectionDescription() : $pageDescription;
 	$cID = $c->getCollectionID();
 	$isEditMode = ($c->isEditMode()) ? "true" : "false";
 	$isArrangeMode = ($c->isArrangeMode()) ? "true" : "false";
 
 
-    if ($c->hasPageThemeCustomizations()) {
-        $styleObject = $c->getCustomStyleObject();
-    } else {
-        $pt = $c->getCollectionThemeObject();
-        if (is_object($pt)) {
-            $styleObject = $pt->getThemeCustomStyleObject();
-        }
-    }
+	if ($c->hasPageThemeCustomizations()) {
+		$styleObject = $c->getCustomStyleObject();
+	} else {
+		$pt = $c->getCollectionThemeObject();
+		if (is_object($pt)) {
+			$styleObject = $pt->getThemeCustomStyleObject();
+		}
+	}
 
-    if (is_object($styleObject)) {
-        $scc = $styleObject->getCustomCssRecord();
-    }
+	if (is_object($styleObject)) {
+		$scc = $styleObject->getCustomCssRecord();
+	}
 
 } else {
 	$cID = 1;
 }
 ?>
-
 <meta http-equiv="content-type" content="text/html; charset=<?php echo APP_CHARSET?>" />
 <?php
-$mdesc = Config::get('concrete.mdesc');
-$mkeyword = Config::get('concrete.mkeyword');
+$mdesc = \Site::getSite()->getAttribute('default_site_desc');
+$mkeyword =  \Site::getSite()->getAttribute('default_site_keywords');
 if($mdesc){
 	$akd = $mdesc;
 }else{
 	$akd = $c->getCollectionAttributeValue('meta_description');
 }
-
 if($mkeyword){
 	$akk = $mkeyword;
 }else{
 	$akk = $c->getCollectionAttributeValue('meta_keywords');
 }
 ?>
-
-<?php
-$p = Page::getCurrentPage();
-if(is_object($p) && $p instanceof Page && !$p->isError() && $p->getCollectionID() == HOME_CID):
-$site = Config::get('concrete.site');
-?>
-<title><?php echo $site; ?></title>
-<?php else: ?>
 <title><?php echo htmlspecialchars($pageTitle, ENT_COMPAT, APP_CHARSET)?></title>
-<?php endif; ?>
-
-<?php
-if ($akd) { ?>
+<?php if ($akd) { ?>
 <meta name="description" content="<?php echo htmlspecialchars($akd, ENT_COMPAT, APP_CHARSET)?>" />
 <?php } else { ?>
 <meta name="description" content="<?php echo htmlspecialchars($pageDescription, ENT_COMPAT, APP_CHARSET)?>" />
-<?php }
-if ($akk) { ?>
+<?php } ?>
+<?php if ($akk) { ?>
 <meta name="keywords" content="<?php echo htmlspecialchars($akk, ENT_COMPAT, APP_CHARSET)?>" />
 <?php }
 if($c->getCollectionAttributeValue('exclude_search_index')) { ?>
-    <meta name="robots" content="noindex" />
+	<meta name="robots" content="noindex" />
 <?php } ?>
-
-<meta property="og:locale" content="ja_JP" />
+<meta property="og:locale" content="<?php echo \Localization::activeLocale();?>" />
 <meta property="og:type" content="website" />
-<?php
-$p = Page::getCurrentPage();
-if(is_object($p) && $p instanceof Page && !$p->isError() && $p->getCollectionID() == HOME_CID):
-$site = Config::get('concrete.site');
-?>
-<meta property="og:title" content="<?php echo htmlspecialchars($site, ENT_COMPAT, APP_CHARSET)?>" />
-<?php else: ?>
 <meta property="og:title" content="<?php echo htmlspecialchars($pageTitle, ENT_COMPAT, APP_CHARSET)?>" />
-<?php endif; ?>
-
 <?php if($akd): ?>
 <meta property="og:description" content="<?php echo htmlspecialchars($akd, ENT_COMPAT, APP_CHARSET)?>" />
 <?php endif; ?>
-
 <meta property="og:url" content="<?php echo $nh->getLinkToCollection($c); ?>" />
 <meta property="og:site_name" content="<?php echo htmlspecialchars($site, ENT_COMPAT, APP_CHARSET)?>" />
 <meta property="og:image" content="" />
-
 <?php $u = new User(); ?>
 <script type="text/javascript">
 <?php
@@ -149,19 +136,15 @@ var CCM_IMAGE_PATH = "<?php echo ASSETS_URL_IMAGES?>";
 var CCM_TOOLS_PATH = "<?php echo REL_DIR_FILES_TOOLS_REQUIRED?>";
 var CCM_APPLICATION_URL = "<?php echo \Core::getApplicationURL()?>";
 var CCM_REL = "<?php echo \Core::getApplicationRelativePath()?>";
-
+var CCM_THEME_PATH = '<?php echo $v->getThemePath()?>';
+var cm_this_pagenation_total = 0;
 </script>
-
 <?php if (isset($scc) && is_object($scc)) { ?>
-    <style type="text/css">
-        <?php print $scc->getValue();?>
-    </style>
+	<style type="text/css">
+		<?php print $scc->getValue();?>
+	</style>
 <?php } ?>
-
 <?php
-
-$v = View::getInstance();
-
 if (Config::get('concrete.user.profiles_enabled') && $u->isRegistered()) {
 	$v->requireAsset('core/account');
 	$v->addFooterItem('<script type="text/javascript">$(function() { ccm_enableUserProfileMenu(); });</script>');
@@ -173,36 +156,36 @@ $modernIconFID = intval(Config::get('concrete.misc.modern_tile_thumbnail_fid'));
 $modernIconBGColor = strval(Config::get('concrete.misc.modern_tile_thumbnail_bgcolor'));
 
 if($favIconFID) {
-    $f = File::getByID($favIconFID);
-    if (is_object($f)) {
-        ?>
-        <link rel="shortcut icon" href="<?php echo $f->getRelativePath() ?>" type="image/x-icon"/>
-        <link rel="icon" href="<?php echo $f->getRelativePath() ?>" type="image/x-icon"/>
-    <?php
-    }
+	$f = File::getByID($favIconFID);
+	if (is_object($f)) {
+		?>
+		<link rel="shortcut icon" href="<?php echo $f->getRelativePath() ?>" type="image/x-icon"/>
+		<link rel="icon" href="<?php echo $f->getRelativePath() ?>" type="image/x-icon"/>
+	<?php
+	}
 }
 
 if($appleIconFID) {
-    $f = File::getByID($appleIconFID);
-    if (is_object($f)) {
-        ?>
-        <link rel="apple-touch-icon" href="<?php echo $f->getRelativePath(); ?>"/>
-    <?php
-    }
+	$f = File::getByID($appleIconFID);
+	if (is_object($f)) {
+		?>
+		<link rel="apple-touch-icon" href="<?php echo $f->getRelativePath(); ?>"/>
+	<?php
+	}
 }
 
 if($modernIconFID) {
 	$f = File::getByID($modernIconFID);
-    if(is_object($f)) {
-        ?>
-        <meta name="msapplication-TileImage" content="<?php echo $f->getRelativePath(); ?>" /><?php
-        echo "\n";
-        if (strlen($modernIconBGColor)) {
-            ?>
-            <meta name="msapplication-TileColor" content="<?php echo $modernIconBGColor; ?>" /><?php
-            echo "\n";
-        }
-    }
+	if(is_object($f)) {
+		?>
+		<meta name="msapplication-TileImage" content="<?php echo $f->getRelativePath(); ?>" /><?php
+		echo "\n";
+		if (strlen($modernIconBGColor)) {
+			?>
+			<meta name="msapplication-TileColor" content="<?php echo $modernIconBGColor; ?>" /><?php
+			echo "\n";
+		}
+	}
 }
 
 if (is_object($cp)) {
@@ -220,7 +203,7 @@ if (is_object($cp)) {
 	}
 }
 
-$v = View::getInstance();
+
 $v->markHeaderAssetPosition();
 $_trackingCodePosition = Config::get('concrete.seo.tracking.code_position');
 if (empty($disableTrackingCode) && $_trackingCodePosition === 'top') {

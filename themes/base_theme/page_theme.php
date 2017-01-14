@@ -9,8 +9,6 @@ class PageTheme extends Theme implements ThemeProviderInterface
 {
 	/**
 	 * テーマで利用するアセットファイル群の定義
-	 * 取得出来ない場合はfalseを返す。
-	 *
 	 */
 	public function registerAssets() {
 		$this->requireAsset('javascript', 'jquery');
