@@ -1,15 +1,24 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
+use Concrete\Core\Support\Facade\Application;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Concrete\Core\Multilingual\Page\Section\Section;
 $nh = Core::make('helper/navigation');
+$au = Core::make('helper/aUtil');
+$app = Application::getFacadeApplication();
 //view
 $v = View::getInstance();
 //sitename
 $sitename = Config::get('concrete.site');
+//siteobj
+$siteobj = $app->make('site')->getSite();
+//config
+$config = $siteobj->getConfigRepository();
 //lang
 $current_section = Section::getCurrentSection();
 if(is_object($current_section)){
 	$current_section_top_id = $current_section->getCollectionID();
+	$cl = $current_section->getLocale();
 }
 $locales = \Site::getSite()->getLocales();
 foreach ($locales as $locale) {
@@ -106,8 +115,14 @@ if (is_object($c)) {
 ?>
 <meta http-equiv="content-type" content="text/html; charset=<?php echo APP_CHARSET?>" />
 <?php
-$mdesc = \Site::getSite()->getAttribute('default_site_desc');
-$mkeyword =  \Site::getSite()->getAttribute('default_site_keywords');
+if($cl == 'ja_JP'){
+	$mdesc = \Site::getSite()->getAttribute('default_site_desc');
+	$mkeyword =  \Site::getSite()->getAttribute('default_site_keywords');
+}elseif($cl == 'en_US'){
+	$mdesc = \Site::getSite()->getAttribute('default_site_desc_en');
+	$mkeyword =  \Site::getSite()->getAttribute('default_site_keywords_en');
+}
+
 if($mdesc){
 	$akd = $mdesc;
 }else{
@@ -138,8 +153,13 @@ if($c->getCollectionAttributeValue('exclude_search_index')) { ?>
 <meta property="og:description" content="<?php echo htmlspecialchars($akd, ENT_COMPAT, APP_CHARSET)?>" />
 <?php endif; ?>
 <meta property="og:url" content="<?php echo $nh->getLinkToCollection($c); ?>" />
-<meta property="og:site_name" content="<?php echo htmlspecialchars($site, ENT_COMPAT, APP_CHARSET)?>" />
-<meta property="og:image" content="" />
+<meta property="og:site_name" content="<?php echo htmlspecialchars($sitename, ENT_COMPAT, APP_CHARSET)?>" />
+<?php
+	$ogpimg = \Site::getSite()->getAttribute('default_site_ogimg');
+	if(is_object($ogpimg)){
+		echo '<meta property="og:image" content="'.$ogpimg->getURL().'" />';
+	}
+?>
 <?php $u = new User(); ?>
 <script type="text/javascript">
 <?php
@@ -170,10 +190,10 @@ if (Config::get('concrete.user.profiles_enabled') && $u->isRegistered()) {
 	$v->addFooterItem('<script type="text/javascript">$(function() { ccm_enableUserProfileMenu(); });</script>');
 }
 
-$favIconFID=intval(Config::get('concrete.misc.favicon_fid'));
-$appleIconFID =intval(Config::get('concrete.misc.iphone_home_screen_thumbnail_fid'));
-$modernIconFID = intval(Config::get('concrete.misc.modern_tile_thumbnail_fid'));
-$modernIconBGColor = strval(Config::get('concrete.misc.modern_tile_thumbnail_bgcolor'));
+$favIconFID=intval($config->get('misc.favicon_fid'));
+$appleIconFID =intval($config->get('misc.iphone_home_screen_thumbnail_fid'));
+$modernIconFID = intval($config->get('modern_tile_thumbnail_fid'));
+$modernIconBGColor = strval($config->get('modern_tile_thumbnail_bgcolor'));
 
 if($favIconFID) {
 	$f = File::getByID($favIconFID);
