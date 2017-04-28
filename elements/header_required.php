@@ -243,10 +243,15 @@ if (is_object($cp)) {
 	}
 }
 
-
 $v->markHeaderAssetPosition();
-$_trackingCodePosition = Config::get('concrete.seo.tracking.code_position');
-if (empty($disableTrackingCode) && $_trackingCodePosition === 'top') {
-	echo Config::get('concrete.seo.tracking.code');
+if (empty($disableTrackingCode)) {
+    echo $config->get('seo.tracking.code.header');
 }
-echo $c->getCollectionAttributeValue('header_extra_content');
+if ($scc) {
+?>
+    <style type="text/css"><?php echo $scc->getValue(); ?></style>
+    <?php
+}
+if ($c !== null) {
+    echo $c->getAttribute('header_extra_content');
+}
