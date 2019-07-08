@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\SuitonBaseUtil\Theme\BaseTheme;
+namespace Concrete\Package\BaseUtility\Theme\BaseTheme;
 defined('C5_EXECUTE') or die("Access Denied.");
 
 use Concrete\Core\Area\Layout\Preset\Provider\ThemeProviderInterface;

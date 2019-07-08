@@ -1,6 +1,7 @@
 <?php
-namespace Concrete\Package\SuitonBaseUtil\Src\Application\Service\Dashboard;
+namespace BaseUtility\Application\Service\Dashboard;
 use Page;
+
 class ExtendSitemap extends \Concrete\Core\Application\Service\Dashboard\Sitemap
 {
     public function getNode($cItem, $includeChildren = true, $onGetNode = null)

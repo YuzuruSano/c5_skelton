@@ -1,9 +1,9 @@
 <?php
-namespace Concrete\Package\SuitonBaseUtil;
+namespace Concrete\Package\BaseUtility;
 defined('C5_EXECUTE') or die("Access Denied.");
 
 use Package;
-use Concrete\Package\SuitonBaseUtil\Src\AdditionalUtil\AdditionalUtilServiceProvider;
+use \BaseUtility\AdditionalUtil\AdditionalUtilServiceProvider;
 use Core;
 use Config;
 use Concrete\Core\Page\Theme\Theme;
@@ -12,10 +12,14 @@ use Environment;
 class Controller extends Package
 {
 	protected $pkgDescription = "Base utilies and snipetts";
-	protected $pkgName = "Suiton Base Util";
-	protected $pkgHandle = 'suiton_base_util';
-	protected $appVersionRequired = '5.7.3.1';
-	protected $pkgVersion = '1.1.0';
+	protected $pkgName = "Base Utility";
+	protected $pkgHandle = 'base_utility';
+	protected $appVersionRequired = '8.0.0';
+	protected $pkgVersion = '1.1.1';
+	protected $pkgAutoloaderRegistries = array(
+        'src/BaseUtility/AdditionalUtil' => 'BaseUtility\AdditionalUtil',
+        'src/BaseUtility/Application' => 'BaseUtility\Application',
+    );
 
 	 public function on_start()
 	{
@@ -97,12 +101,12 @@ class Controller extends Package
 		sitemap extend
 		未承認バージョンの有無・権限オーバーライド状況の表示
 		=============================================== */
-		Core::bind('helper/concrete/dashboard/sitemap', 'Concrete\Package\SuitonBaseUtil\Src\Application\Service\Dashboard\ExtendSitemap');
+		Core::bind('helper/concrete/dashboard/sitemap', 'BaseUtility\Application\Service\Dashboard\ExtendSitemap');
 		/* ===============================================
 		override core components
 		=============================================== */
-		$env = Environment::get();
-		$env->overrideCoreByPackage('elements/header_required.php', $this);
+		// $env = Environment::get();
+		// $env->overrideCoreByPackage('elements/header_required.php', $this);
 	}
 
 	public function install(){
