@@ -2,12 +2,11 @@
 namespace Concrete\Package\BaseUtility;
 defined('C5_EXECUTE') or die("Access Denied.");
 
-use Package;
+use Concrete\Core\Package\Package;
 use \BaseUtility\AdditionalUtil\AdditionalUtilServiceProvider;
-use Core;
-use Config;
+use Concrete\Core\Support\Facade\Config;
 use Concrete\Core\Page\Theme\Theme;
-use Environment;
+use Concrete\Core\Foundation\Environment;
 
 class Controller extends Package
 {
@@ -30,7 +29,6 @@ class Controller extends Package
 		/* css
 		----------------------- */
 		$css = array(
-			'example-css' => $this->pkgThemePath . 'example.css',
 		);
 		foreach($css as $h => $n){
 			$al->register('css',$h,$n,array(),$this->pkgHandle);
@@ -46,7 +44,6 @@ class Controller extends Package
 		/* js
 		----------------------- */
 		$js = array(
-			'sample-js' => $this->pkgThemePath . 'samplen.js'
 		);
 		foreach($js as $h => $n){
 			$al->register(
@@ -94,14 +91,13 @@ class Controller extends Package
 		If you want to add functions ,
 		add functions to 'this_package/src/AdditionalUtil/Service/AdditionalUtil.php'
 		=============================================== */
-		$app = Core::getFacadeApplication();
-		$sp = new AdditionalUtilServiceProvider($app);
+		$sp = new AdditionalUtilServiceProvider($this->app);
 		$sp->register();
 		/* ===============================================
 		sitemap extend
 		未承認バージョンの有無・権限オーバーライド状況の表示
 		=============================================== */
-		Core::bind('helper/concrete/dashboard/sitemap', 'BaseUtility\Application\Service\Dashboard\ExtendSitemap');
+		$this->app->bind('helper/concrete/dashboard/sitemap', 'BaseUtility\Application\Service\Dashboard\ExtendSitemap');
 		/* ===============================================
 		override core components
 		=============================================== */

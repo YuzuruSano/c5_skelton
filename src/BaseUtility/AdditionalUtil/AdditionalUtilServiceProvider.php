@@ -8,7 +8,7 @@ class AdditionalUtilServiceProvider extends ServiceProvider {
 
     public function register() {
         $singletons = array(
-            'helper/aUtil' => '\AdditionalUtil\Service\AdditionalUtil'
+            'helper/aUtil' => '\BaseUtility\AdditionalUtil\Service\AdditionalUtil'
         );
 
         foreach($singletons as $key => $value) {
